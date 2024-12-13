@@ -7,7 +7,7 @@ def average_position(p1, p2):
 
 class Parameter:
     def __init__(self, position):
-        self._position = np.array(position)
+        self._position = position
         self._distance = None
         self._ratio = None
 
@@ -19,7 +19,7 @@ class Parameter:
     # Setter for position
     @position.setter
     def position(self, value):
-        self._position = np.array(value)
+        self._position = value
         # Update distance and ratio when position changes
         self._distance = self.positions_to_distances(self._position)
         self._ratio = self.distances_to_ratios(self._distance)
@@ -46,32 +46,28 @@ class Parameter:
         self._ratio = value
 
     def distance_position(self, p1, p2):
-        return [abs(b - a) / 2 for a, b in zip(p1, p2)]
+        return ((p2[1] - p1[1])**2 + (p2[0] - p1[0])**2)**0.5
 
     def distances_to_ratios(self, array):
-        if len(array) == 0:
-            return np.array([])
         max_distance = array.max()
-        if max_distance == 0:
-            return np.array([0 for _ in array])
         ret = array / max_distance
         return ret
 
     def positions_to_distances(self, array):
-        raise NotImplementedError("The positions_to_distances method must be implemented in a subclass.")
+        raise NotImplementedError("Abstract class: the positions_to_distances method must be implemented in a subclass.")
 
 class Parameter_Continuous(Parameter):
     def __init__(self, position):
         super().__init__(position)
+        print(self.position)
         self.distance = self.positions_to_distances(self._position)
         self.ratio = self.distances_to_ratios(self._distance)
 
     def positions_to_distances(self, array):
-        ret = []
+        ret = np.zeros(len(array)-1)
         for i in range(len(array) - 1):
-            distance = self.distance_position(array[i], array[i + 1])
-            ret.append(distance)
-        return np.array(ret)
+            ret[i] = self.distance_position(array[i], array[i + 1])
+        return ret
 
 class Parameter_By_2(Parameter):
     def __init__(self, position_pairs):
@@ -80,13 +76,10 @@ class Parameter_By_2(Parameter):
         self.ratio = self.distances_to_ratios(self._distance)
 
     def positions_to_distances(self, position_pairs):
-        ret = []
-        for pair in position_pairs:
-            if len(pair) != 2:
-                raise ValueError("Each position pair must contain exactly two elements.")
-            distance = self.distance_position(pair[0], pair[1])
-            ret.append(distance)
-        return np.array(ret)
+        ret = np.zeros(len(position_pairs))
+        for i, pair in enumerate(position_pairs):
+            ret[i] = self.distance_position(pair[0], pair[1])
+        return ret
 
 # Load and preprocess data
 df = pd.read_csv('/Users/andypark/Desktop/2024 FALL/AMS 325/Project/landscape_AMS325.csv')
@@ -127,5 +120,3 @@ upper_lower_face = Parameter_By_2([
     [landmarks[397], 
      landmarks[172]] # [Chin right, Chin left]
 ])
-
-print(horizontal.ratio)
