@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 from ast import literal_eval
+from tqdm import tqdm
+import pickle
 
 def average_position(p1, p2):
     return [(a + b) / 2 for a, b in zip(p1, p2)]
@@ -59,7 +61,6 @@ class Parameter:
 class Parameter_Continuous(Parameter):
     def __init__(self, position):
         super().__init__(position)
-        print(self.position)
         self.distance = self.positions_to_distances(self._position)
         self.ratio = self.distances_to_ratios(self._distance)
 
@@ -86,37 +87,50 @@ df = pd.read_csv('/Users/andypark/Desktop/2024 FALL/AMS 325/Project/landscape_AM
 if 'Unnamed: 0' in df.columns:
     del df['Unnamed: 0']
 df['Landmarks'] = df['Landmarks'].apply(literal_eval)
+parameters = [0 for _ in range(5500)]
 
-# Retrieve landmarks from a specific row
-landmarks = df.loc[0]['Landmarks']
+for i in tqdm(range(5500)):
+    # Retrieve landmarks from a specific row
+    landmarks = df.loc[i]['Landmarks']
 
-# Parameter_Continuous classes
-vertical = Parameter_Continuous([
-    landmarks[10],  # Forehead
-    landmarks[9],   # Mid eyebrow
-    landmarks[2],   # Under the nose
-    landmarks[17],  # Lower lip
-    landmarks[152]  # Chin
-])
+    # Parameter_Continuous classes
+    # four parameters
+    vertical = Parameter_Continuous([
+        landmarks[10],  # Forehead
+        landmarks[9],   # Mid eyebrow
+        landmarks[2],   # Under the nose
+        landmarks[17],  # Lower lip
+        landmarks[152]  # Chin
+    ])
 
-horizontal = Parameter_Continuous([
-    average_position(landmarks[162], landmarks[127]),  # Left face end
-    landmarks[33],   # Left eye left
-    landmarks[133],  # Left eye right
-    landmarks[362],  # Right eye left
-    landmarks[263], # Righy eye right
-    average_position(landmarks[389], landmarks[356]) # Left face end
-])
+    # five parameters
+    horizontal = Parameter_Continuous([
+        average_position(landmarks[162], landmarks[127]),  # Left face end
+        landmarks[33],   # Left eye left
+        landmarks[133],  # Left eye right
+        landmarks[362],  # Right eye left
+        landmarks[263], # Righy eye right
+        average_position(landmarks[389], landmarks[356]) # Left face end
+    ])
 
-# Parameter_By_2 classes
-nose_to_lip = Parameter_By_2([
-    [landmarks[279], landmarks[49]], # Nose horizontal length
-    [landmarks[291], landmarks[61]] # Lip horizontal length
-])
+    # Parameter_By_2 classes
+    # two parameters
+    nose_to_lip = Parameter_By_2([
+        [landmarks[279], landmarks[49]], # Nose horizontal length
+        [landmarks[291], landmarks[61]] # Lip horizontal length
+    ])
 
-upper_lower_face = Parameter_By_2([
-    [average_position(landmarks[162], landmarks[127]),
-     average_position(landmarks[389], landmarks[356])], # [Left face end, Right face end]
-    [landmarks[397], 
-     landmarks[172]] # [Chin right, Chin left]
-])
+    # two parameters
+    upper_lower_face = Parameter_By_2([
+        [average_position(landmarks[162], landmarks[127]),
+        average_position(landmarks[389], landmarks[356])], # [Left face end, Right face end]
+        [landmarks[397], 
+        landmarks[172]] # [Chin right, Chin left]
+    ])
+
+    parameters[i] = np.concatenate((vertical.ratio, horizontal.ratio, nose_to_lip.ratio, upper_lower_face.ratio))
+
+with open('parameters.pkl', 'wb') as file:
+    pickle.dump(parameters, file)
+    
+print("Parameter has successfully generated.")

@@ -3,17 +3,24 @@ import mediapipe as mp
 import pandas as pd
 import os
 from tqdm import tqdm
+import re
+
+def sort_key(filename):
+    match = re.match(r'([A-Za-z]+)(\d+)\.jpg', filename)
+    if match:
+        prefix, number = match.groups()
+        return (prefix, int(number))
+    else:
+        return (filename, 0)
 
 ### Data Processing For Rating Data
-
 wd = os.getcwd() 
 rating_df = pd.read_excel( wd + '/Datasets/All_Ratings.xlsx' ) # Data Frame for ratings
 rating_df = rating_df.sort_values(by="Filename")
 del rating_df['Rater']
 del rating_df['original Rating']
-filenames = sorted(rating_df['Filename'].unique())
-
-# Get the mean of each person, and save it into rating_mean.p file.
+# Changing lexicographical order to custom sorting rules, to make it perfectly sorted.
+filenames = sorted(rating_df['Filename'].unique(), key=sort_key)
 
 rating_by_name = dict()
 print('averaging ratings for 60 people (5500*60 = 330000 calculation)')
@@ -48,3 +55,5 @@ for filename in tqdm(filenames):
     
 df = pd.DataFrame(data, columns = ['Filename', 'Rating', 'Landmarks'])
 df.to_csv('landscape_AMS325.csv')
+
+print("landscape csv file has successfully generated.")
