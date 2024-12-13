@@ -6,3 +6,5 @@ del df['Unnamed: 0']
 df['Landmarks'] = df['Landmarks'].apply(literal_eval)
 
 landmarks = df.loc[0]['Landmarks']
+
+print(landmarks)
