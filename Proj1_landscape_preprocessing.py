@@ -4,6 +4,7 @@ import pandas as pd
 import os
 from tqdm import tqdm
 import re
+import pickle
 
 def sort_key(filename):
     match = re.match(r'([A-Za-z]+)(\d+)\.jpg', filename)
@@ -57,3 +58,9 @@ df = pd.DataFrame(data, columns = ['Filename', 'Rating', 'Landmarks'])
 df.to_csv('landscape_AMS325.csv')
 
 print("landscape csv file has successfully generated.")
+
+ratings = df['Rating'].tolist()
+with open('ratings.pkl', 'wb') as file:
+    pickle.dump(ratings, file)
+    
+print("Ratings has successfully generated.")
