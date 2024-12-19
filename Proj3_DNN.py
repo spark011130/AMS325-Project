@@ -8,8 +8,9 @@ import datetime
 import pickle
 
 # Data Preparation
-parameter_path = "/Users/andypark/Desktop/2024 FALL/AMS 325/Project/parameters.pkl"
-ratings_path = "/Users/andypark/Desktop/2024 FALL/AMS 325/Project/ratings.pkl"
+with open("/Users/andypark/Desktop/2024 FALL/AMS 325/Project/section.pkl", 'rb') as file: section = pickle.load(file)
+parameter_path = f"/Users/andypark/Desktop/2024 FALL/AMS 325/Project/{section}_parameters.pkl"
+ratings_path = f"/Users/andypark/Desktop/2024 FALL/AMS 325/Project/{section}_ratings.pkl"
 
 with open(parameter_path, 'rb') as file: parameters = pickle.load(file)
 with open(ratings_path, 'rb') as file: ratings = pickle.load(file)
@@ -59,7 +60,7 @@ plt.title('Loss over Epochs')
 plt.xlabel('Epoch')
 plt.ylabel('MSE Loss')
 plt.legend()
-plt.savefig('training_history.png')
+plt.savefig(f'{section}_training_history.png')
 plt.close()
 
 # Actual vs Prediction y Visualization
@@ -69,11 +70,11 @@ plt.plot([1,5], [1,5], 'r--')  # Most Romantic Prediction Line
 plt.title('Actual vs Predicted')
 plt.xlabel('Actual y')
 plt.ylabel('Predicted y')
-plt.savefig('actual_vs_predicted.png')
+plt.savefig(f'{section}_actual_vs_predicted.png')
 plt.close()
 
 # Model Save
-model.save('trained_model.keras')
+model.save(f'{section}_trained_model.keras')
 print("model has successfully saved.")
 
 # tensorboard --logdir=logs/fit

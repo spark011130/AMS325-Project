@@ -59,8 +59,13 @@ df.to_csv('landscape_AMS325.csv')
 
 print("landscape csv file has successfully generated.")
 
+section = 'CF'
+df = df[df['Filename'].str.startswith(section)]
+df = df.reset_index(drop=True)    
 ratings = df['Rating'].tolist()
-with open('ratings.pkl', 'wb') as file:
+with open(f'section.pkl', 'wb') as file:
+    pickle.dump(section, file)
+with open(f'{section}_ratings.pkl', 'wb') as file:
     pickle.dump(ratings, file)
-    
+
 print("Ratings has successfully generated.")

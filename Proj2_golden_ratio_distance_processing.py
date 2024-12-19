@@ -82,14 +82,23 @@ class Parameter_By_2(Parameter):
             ret[i] = self.distance_position(pair[0], pair[1])
         return ret
 
+with open("/Users/andypark/Desktop/2024 FALL/AMS 325/Project/section.pkl", 'rb') as file: 
+    section = pickle.load(file)
+
 # Load and preprocess data
 df = pd.read_csv('/Users/andypark/Desktop/2024 FALL/AMS 325/Project/landscape_AMS325.csv')
 if 'Unnamed: 0' in df.columns:
     del df['Unnamed: 0']
+df = df[df['Filename'].str.startswith(section)]
 df['Landmarks'] = df['Landmarks'].apply(literal_eval)
-parameters = [0 for _ in range(5500)]
+df = df.reset_index(drop=True)
 
-for i in tqdm(range(5500)):
+N = len(df)
+print(df.shape)
+print(df.head())
+parameters = [0 for _ in range(N)]
+print(N)
+for i in tqdm(range(N)):
     # Retrieve landmarks from a specific row
     landmarks = df.loc[i]['Landmarks']
 
@@ -130,7 +139,7 @@ for i in tqdm(range(5500)):
 
     parameters[i] = np.concatenate((vertical.ratio, horizontal.ratio, nose_to_lip.ratio, upper_lower_face.ratio))
 
-with open('parameters.pkl', 'wb') as file:
+with open(f'{section}_parameters.pkl', 'wb') as file:
     pickle.dump(parameters, file)
     
 print("Parameter has successfully generated.")
