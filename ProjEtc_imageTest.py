@@ -2,48 +2,20 @@ from tensorflow.keras.models import load_model
 import cv2
 import mediapipe as mp
 import numpy as np
-import time
 from Proj2_golden_ratio_distance_processing import Parameter_By_2, Parameter_Continuous, average_position
 
 def main():
-    model = load_model('AM_trained_model.keras')
+    model = load_model('AF_trained_model.keras')
     mp_face_mesh = mp.solutions.face_mesh
     mp_drawing = mp.solutions.drawing_utils
     drawing_spec = mp_drawing.DrawingSpec(thickness=1, circle_radius=1)
 
     face_mesh = mp_face_mesh.FaceMesh(static_image_mode=True)
-    cap = cv2.VideoCapture(0)
+    img = cv2.imread('/Users/andypark/Desktop/2024 FALL/AMS 325/Project/pbb.png')
+    rgb_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    results = face_mesh.process(rgb_image)
     
-    if not cap.isOpened():
-        print("Camera not available.")
-        return
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            print("Can't read frame.")
-            return
-        rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        results = face_mesh.process(rgb_image)
-
-        if results.multi_face_landmarks:
-            for face_landmarks in results.multi_face_landmarks:
-                mp_drawing.draw_landmarks(
-                    image=frame,
-                    landmark_list=face_landmarks,
-                    connections=mp_face_mesh.FACEMESH_TESSELATION,
-                    landmark_drawing_spec=None,
-                    connection_drawing_spec=mp_drawing.DrawingSpec(color=(0, 255, 0), thickness=1, circle_radius=1)
-                )
-        cv2.imshow('live camera', frame)
-        
-        key = cv2.waitKey(1) & 0xFF
-        
-        if key == ord('r'):
-            break
-    cap.release()
-    cv2.destroyAllWindows()
-    
-    h, w, _ = frame.shape
+    h, w, _ = img.shape
     landmarks = [(int(lm.x * w), int(lm.y * h)) for lm in results.multi_face_landmarks[0].landmark]
     
     vertical = Parameter_Continuous([
