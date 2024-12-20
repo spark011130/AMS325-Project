@@ -4,14 +4,13 @@ import mediapipe as mp
 import numpy as np
 from Proj2_golden_ratio_distance_processing import Parameter_By_2, Parameter_Continuous, average_position
 
-def main():
-    model = load_model('AF_trained_model.keras')
+def main(model_path, img_path):
+    model = load_model(model_path)
     mp_face_mesh = mp.solutions.face_mesh
     mp_drawing = mp.solutions.drawing_utils
-    drawing_spec = mp_drawing.DrawingSpec(thickness=1, circle_radius=1)
 
     face_mesh = mp_face_mesh.FaceMesh(static_image_mode=True)
-    img = cv2.imread('/Users/andypark/Desktop/2024 FALL/AMS 325/Project/pbb.png')
+    img = cv2.imread(img_path)
     rgb_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     results = face_mesh.process(rgb_image)
     
@@ -57,4 +56,4 @@ def main():
     print(y_pred)
     
 if __name__ == "__main__":
-    main()
+    main('AF_trained_model.keras', 'cww.png')

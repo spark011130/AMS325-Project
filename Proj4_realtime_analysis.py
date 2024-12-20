@@ -2,14 +2,20 @@ from tensorflow.keras.models import load_model
 import cv2
 import mediapipe as mp
 import numpy as np
-import time
 from Proj2_golden_ratio_distance_processing import Parameter_By_2, Parameter_Continuous, average_position
 
+'''
+1. Loads a pre-trained model.
+2. Captures video from the camera and processes each frame to detect facial landmarks using MediaPipe.
+3. Draws the detected landmarks on the video feed.
+4. Calculates various facial parameters (e.g., vertical, horizontal distances, and nose-to-lip lengths) from the detected landmarks.
+5. Uses the trained model to make a prediction based on the calculated parameters.
+6. Displays the live camera feed with the drawn landmarks and prints the prediction value.
+'''
 def main():
     model = load_model('AM_trained_model.keras')
     mp_face_mesh = mp.solutions.face_mesh
     mp_drawing = mp.solutions.drawing_utils
-    drawing_spec = mp_drawing.DrawingSpec(thickness=1, circle_radius=1)
 
     face_mesh = mp_face_mesh.FaceMesh(static_image_mode=True)
     cap = cv2.VideoCapture(0)

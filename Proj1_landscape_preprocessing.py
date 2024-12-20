@@ -6,6 +6,15 @@ from tqdm import tqdm
 import re
 import pickle
 
+"""
+Sorts filenames based on a custom sorting rule, which separates the prefix (letters) and suffix (numbers).
+
+Parameters:
+filename (str): The name of the file to be sorted.
+
+Returns:
+tuple: A tuple containing the prefix and number (as an integer), used for sorting filenames.
+"""
 def sort_key(filename):
     match = re.match(r'([A-Za-z]+)(\d+)\.jpg', filename)
     if match:
@@ -15,6 +24,10 @@ def sort_key(filename):
         return (filename, 0)
 
 ### Data Processing For Rating Data
+'''
+Reads the rating data from an Excel file and sorts the filenames lexicographically using a custom sorting function.
+Calculates the average rating for each unique filename.
+'''
 wd = os.getcwd() 
 rating_df = pd.read_excel( wd + '/Datasets/All_Ratings.xlsx' ) # Data Frame for ratings
 rating_df = rating_df.sort_values(by="Filename")
@@ -29,6 +42,11 @@ for filename in tqdm(filenames):
     rating_by_name[filename] = rating_df[rating_df['Filename'] == filename]['Rating'].mean()
 
 ### Landmark Analyzer
+'''
+Analyzes the face landmarks of images using the MediaPipe FaceMesh model.
+Calculates and stores the landmark coordinates for each image where a face is detected.
+'''
+
 mp_face_mesh = mp.solutions.face_mesh
 face_mesh = mp_face_mesh.FaceMesh(static_image_mode=True)
 landmarks_by_name = dict()
@@ -49,6 +67,8 @@ for filename in tqdm(filenames):
     landmarks = [(int(lm.x * w), int(lm.y * h)) for lm in results.multi_face_landmarks[0].landmark]
     landmarks_by_name[filename] = landmarks
 
+# Processes the data by combining ratings and landmarks for each image, then saves the result into a CSV file.
+
 data = []
 print("Final data processing")
 for filename in tqdm(filenames):
@@ -58,6 +78,8 @@ df = pd.DataFrame(data, columns = ['Filename', 'Rating', 'Landmarks'])
 df.to_csv('landscape_AMS325.csv')
 
 print("landscape csv file has successfully generated.")
+
+# Filters the DataFrame for entries that start with a specified section (e.g., 'CF') and saves the ratings for that section.
 
 section = 'CF'
 df = df[df['Filename'].str.startswith(section)]

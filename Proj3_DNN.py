@@ -8,9 +8,10 @@ import datetime
 import pickle
 
 # Data Preparation
-with open("/Users/andypark/Desktop/2024 FALL/AMS 325/Project/section.pkl", 'rb') as file: section = pickle.load(file)
-parameter_path = f"/Users/andypark/Desktop/2024 FALL/AMS 325/Project/{section}_parameters.pkl"
-ratings_path = f"/Users/andypark/Desktop/2024 FALL/AMS 325/Project/{section}_ratings.pkl"
+# Loads the parameter and ratings data for a specific section, processes it, and splits it into training, validation, and test datasets.
+with open("section.pkl", 'rb') as file: section = pickle.load(file)
+parameter_path = f"{section}_parameters.pkl"
+ratings_path = f"{section}_ratings.pkl"
 
 with open(parameter_path, 'rb') as file: parameters = pickle.load(file)
 with open(ratings_path, 'rb') as file: ratings = pickle.load(file)
@@ -22,6 +23,10 @@ X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.3, random_
 X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
 
 # DNN Model Building 13 - 64 - 32 - 1
+'''
+Builds a Deep Neural Network (DNN) model with the architecture: 13 input nodes, 64 hidden nodes, 32 hidden nodes, and 1 output node.
+Compiles the model using Adam optimizer, Mean Squared Error (MSE) loss, and Mean Absolute Error (MAE) metrics.
+'''
 model = Sequential([
     Dense(64, activation='relu', input_shape=(13,)),
     Dense(32, activation='relu'),
@@ -31,11 +36,20 @@ model = Sequential([
 model.compile(optimizer='adam', loss='mse', metrics=['mae'])
 
 # TensorBoard call back
+'''
+Sets up a TensorBoard callback for logging training progress, including loss and other metrics.
+The log directory is based on the current timestamp.
+You can call the following on the terminal to see the result: tensorboard --logdir=logs/fit
+'''
 log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 tensorboard_callback = TensorBoard(log_dir=log_dir, histogram_freq=1, write_graph=True, write_images=True)
 
 
 # Train
+'''
+Trains the DNN model on the training data, validates on the validation data, and logs training history using TensorBoard.
+The model is trained for 1000 epochs with a batch size of 16.
+'''
 history = model.fit(
     X_train, y_train,
     epochs=1000,
@@ -45,11 +59,11 @@ history = model.fit(
     verbose=1
 )
 
-# Evaluation
+# Evaluates the trained model on the test data and prints the Mean Squared Error (MSE) and Mean Absolute Error (MAE).
 test_loss, test_mae = model.evaluate(X_test, y_test, verbose=0)
 print(f'Test MSE: {test_loss:.4f}, Test MAE: {test_mae:.4f}')
 
-# Prediction
+# Makes predictions on the test data and flattens the results for comparison.
 y_pred = model.predict(X_test).flatten()
 
 # Visualization
@@ -76,5 +90,3 @@ plt.close()
 # Model Save
 model.save(f'{section}_trained_model.keras')
 print("model has successfully saved.")
-
-# tensorboard --logdir=logs/fit
