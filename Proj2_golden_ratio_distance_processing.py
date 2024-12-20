@@ -195,7 +195,7 @@ with open("section.pkl", 'rb') as file:
     section = pickle.load(file)
 
 # Load and preprocess data
-df = pd.read_csv('landscape_AMS325.csv')
+df = pd.read_csv('landmark_AMS325.csv')
 if 'Unnamed: 0' in df.columns:
     del df['Unnamed: 0']
 df = df[df['Filename'].str.startswith(section)]

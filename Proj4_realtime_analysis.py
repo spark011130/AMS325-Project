@@ -13,7 +13,7 @@ from Proj2_golden_ratio_distance_processing import Parameter_By_2, Parameter_Con
 6. Displays the live camera feed with the drawn landmarks and prints the prediction value.
 '''
 def main(model_path):
-    model = load_model()
+    model = load_model(model_path)
     mp_face_mesh = mp.solutions.face_mesh
     mp_drawing = mp.solutions.drawing_utils
 

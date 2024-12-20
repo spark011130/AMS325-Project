@@ -51,7 +51,7 @@ mp_face_mesh = mp.solutions.face_mesh
 face_mesh = mp_face_mesh.FaceMesh(static_image_mode=True)
 landmarks_by_name = dict()
 
-print('calculating landscapes for 5500 people')
+print('calculating landmarks for 5500 people')
 for filename in tqdm(filenames):
     image = cv2.imread(wd + '/Datasets/images/' + filename)
     # cv2 reads in BGR format, so requires it to be reversed.
@@ -75,9 +75,9 @@ for filename in tqdm(filenames):
     data.append([filename, rating_by_name[filename], landmarks_by_name[filename]])
     
 df = pd.DataFrame(data, columns = ['Filename', 'Rating', 'Landmarks'])
-df.to_csv('landscape_AMS325.csv')
+df.to_csv('landmark_AMS325.csv')
 
-print("landscape csv file has successfully generated.")
+print("landmark csv file has successfully generated.")
 
 # Filters the DataFrame for entries that start with a specified section (e.g., 'CF') and saves the ratings for that section.
 # Four choices: AM, AF, CM, CF to train.
