@@ -80,7 +80,7 @@ df.to_csv('landscape_AMS325.csv')
 print("landscape csv file has successfully generated.")
 
 # Filters the DataFrame for entries that start with a specified section (e.g., 'CF') and saves the ratings for that section.
-
+# Four choices: AM, AF, CM, CF to train.
 section = 'CF'
 df = df[df['Filename'].str.startswith(section)]
 df = df.reset_index(drop=True)    
