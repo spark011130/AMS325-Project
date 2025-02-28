@@ -28,6 +28,6 @@ This study explored the possibility of evaluating facial attractiveness based on
 
 # References
 
-Oosterhof, N. N., & Todorov, A. (2008). The functional basis of face evaluation.*Proceedings of the National Academy of Sciences* ,  *105* (32), 11087-11092.
+Oosterhof, N. N., & Todorov, A. (2008). The functional basis of face evaluation. *Proceedings of the National Academy of Sciences*,  *105* (32), 11087-11092.
 
 Prokopakis, E. P., Vlastos, I. M., Picavet, V. A., Nolst Trenite, G., Thomas, R., Cingi, C., & Hellings, P. W. (2013). The golden ratio in facial symmetry. *Rhinology, 51* (1), 18–21.
