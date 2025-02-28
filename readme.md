@@ -14,11 +14,11 @@ First, I averaged the 60 evaluations for each person, reducing the 120,000 rows 
 
 After the final epoch, the test MSE reached 0.3592. I have tried modifying various aspects of the DNN, including batch size, activation functions, and the number of nodes in each layer. I also experimented with different methods for calculating the golden ratio. However, achieving a significantly better result beyond this point has proven to be challenging.
 
-<img src="files/AM_training_history.png" width="800">
+<img src="files/AM_training_history.png" align="center" width="800">
 
 As the epochs progressed, the gap between train loss and validation loss widened, and the validation loss fluctuated irregularly. This suggested that the trained model might have been overfitted. To address this, I added an option to save the model with the best predictive performance.
 
-<img src="files/AM_actual_vs_predicted.png" width="400">
+<img src="files/AM_actual_vs_predicted.png" align="center" width="400">
 
 From the Actual vs. Predicted graph, I observed that as the actual **y** values increased, the predicted **y** values tended to decrease proportionally. This implies that the model's predictive power weakened for higher scores, which could be interpreted as a result of excessive normalization. I attempted various methods to reduce this effect, but ultimately, the model still assigned lower predictions to individuals who received higher actual scores. However, the increasing variance was an important aspect to consider. This trend suggests that aesthetic standards may not be entirely objective but rather subjective. While aligning with the golden ratio may enhance facial harmony, the presence of outliers could contribute to a unique charm for some, while not necessarily for others. Observing this increasing variance reinforced my understanding that beauty can be perceived differently depending on individual perspectives.
 
